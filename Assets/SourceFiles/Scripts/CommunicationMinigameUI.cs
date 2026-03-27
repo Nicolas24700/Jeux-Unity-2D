@@ -4,25 +4,19 @@ using UnityEngine.EventSystems;
 
 public class CommunicationMinigameUI : MonoBehaviour
 {
+    // ui references
     [SerializeField] private GameObject panel; 
     [SerializeField] private CommunicationMinigameController controller;
     [SerializeField] private MonoBehaviour playerController; 
     [SerializeField] private GameObject successPanel;
 
-    private Coroutine hideSuccessCoroutine;
-
     private void Awake()
     {
+        // ensure all panels are hidden at the start
         if (panel != null)
             panel.SetActive(false);
         if (successPanel != null)
             successPanel.SetActive(false);
-
-        if (playerController == null)
-        {
-            var found = FindObjectOfType(System.Type.GetType("StarterAssets.ThirdPersonController, Assembly-CSharp")) as MonoBehaviour;
-            if (found != null) playerController = found;
-        }
     }
 
     private void OnEnable()
@@ -37,16 +31,12 @@ public class CommunicationMinigameUI : MonoBehaviour
 
     private void OnTaskStateChanged(bool completed)
     {
+        // when the task state changes, if it's completed, show the success panel and hide the main panel, then re-enable player control
         if (completed)
         {
             if (successPanel != null)
             {
                 successPanel.SetActive(true);
-
-                if (hideSuccessCoroutine != null)
-                {
-                    hideSuccessCoroutine = null;
-                }
                 CoroutineRunner.Run(HideSuccessAfterDelayRealtime(2f));
             }
 
@@ -60,21 +50,21 @@ public class CommunicationMinigameUI : MonoBehaviour
 
     private System.Collections.IEnumerator HideSuccessAfterDelayRealtime(float seconds)
     {
+        // fonction for hiding the success panel after a delay, using unscaled time to ensure it works even if the game is paused
         yield return new WaitForSecondsRealtime(seconds);
         if (successPanel != null)
             successPanel.SetActive(false);
-        hideSuccessCoroutine = null;
     }
 
     public void Show()
     {
+        // when showing the UI, disable player control and navigation events to prevent interference with the minigame
         if (panel == null || controller == null) return;
         panel.SetActive(true);
 
         if (playerController != null)
         {
             playerController.enabled = false;
-            Debug.Log("Player controller frozen");
         }
 
         if (EventSystem.current != null)
@@ -89,6 +79,7 @@ public class CommunicationMinigameUI : MonoBehaviour
 
     public void Hide()
     {
+        // when hiding the UI, re-enable player control and navigation events
         if (panel == null || controller == null) return;
         panel.SetActive(false);
 
@@ -97,8 +88,6 @@ public class CommunicationMinigameUI : MonoBehaviour
             playerController.enabled = true;
             Debug.Log("Player controller unfrozen");
         }
-
-        controller.StopTask();
 
         if (EventSystem.current != null)
         {

@@ -25,7 +25,6 @@ public class CommunicationMinigameController : MonoBehaviour
     [SerializeField] private Color failColor = Color.red;
 
     [Header("Feedback visuel")]
-    [SerializeField] private Image indicatorLight; 
     [SerializeField] private List<Image> indicatorLights = new List<Image>(); 
     [SerializeField] private AudioSource feedbackAudio;
     [SerializeField] private AudioClip successClip;
@@ -33,9 +32,8 @@ public class CommunicationMinigameController : MonoBehaviour
     [SerializeField] private AudioClip failClip;
 
     [Header("Paramètres")]
+    //Dwell time equal to how long the player needs to keep the slider in the green zone to complete an indicator.
     [SerializeField] private float requiredDwellTime;
-    [SerializeField] private bool isActive = false;
-    [SerializeField] private float advanceDelay = 0.5f;
 
     [Header("Contrôles clavier")]
     [SerializeField] private KeyCode increaseKey = KeyCode.RightArrow;
@@ -59,6 +57,7 @@ public class CommunicationMinigameController : MonoBehaviour
     // Pick a random green zone inside min..max with width = successZoneWidth.
     private void SetRandomSuccessZone()
     {
+        // calcul of random succes with clamp to avoid impossible zones
         float w = Mathf.Clamp(successZoneWidth, 1f, Mathf.Max(1f, maxFrequency - minFrequency));
         float minStart = minFrequency;
         float maxStart = maxFrequency - w;
@@ -80,27 +79,11 @@ public class CommunicationMinigameController : MonoBehaviour
         UpdateSliderVisuals();
     }
 
-    private void EnsureIndicatorList()
-    {
-        if (indicatorLights == null) indicatorLights = new List<Image>();
-        if (indicatorLights.Count == 0)
-        {
-            for (int i = 1; i <= 6; i++)
-            {
-                var go = GameObject.Find("indicatorLight" + i);
-                if (go != null)
-                {
-                    var img = go.GetComponent<Image>();
-                    if (img != null) indicatorLights.Add(img);
-                }
-            }
-        }
-    }
 
     private void Update()
     {
         // only run when active and not finished and not already advancing
-        if (!isActive || taskCompleted || isAdvancing)
+        if ( taskCompleted || isAdvancing)
             return;
 
         // read keyboard input
@@ -161,10 +144,9 @@ public class CommunicationMinigameController : MonoBehaviour
     // It marks the current indicator green, plays a sound, waits a bit.
     private IEnumerator HandleIndicatorComplete()
     {
+        // yield break for stopping immedialty if we are already advancing to avoid double triggers
         if (isAdvancing) yield break;
         isAdvancing = true;
-
-        EnsureIndicatorList();
 
         if (indicatorLights == null || indicatorLights.Count == 0)
         {
@@ -193,9 +175,6 @@ public class CommunicationMinigameController : MonoBehaviour
 
         // update visuals (slider and indicators)
         UpdateSliderVisuals();
-
-        // wait short time to show completed state
-        yield return new WaitForSeconds(advanceDelay);
 
         // count completed lights
         int completedCount = 0;
@@ -258,10 +237,6 @@ public class CommunicationMinigameController : MonoBehaviour
         if (sliderFillImage != null)
             sliderFillImage.color = baseColor;
 
-        // update optional single indicator color
-        if (indicatorLight != null)
-            indicatorLight.color = baseColor;
-
         // update the array of indicator lights
         if (indicatorLights != null && indicatorLights.Count > 0)
         {
@@ -317,7 +292,6 @@ public class CommunicationMinigameController : MonoBehaviour
     private void CompleteTask()
     {
         taskCompleted = true;
-        isActive = false;
         if (feedbackAudio != null && successClip != null) feedbackAudio.PlayOneShot(successClip, 1f);
         OnTaskStateChanged?.Invoke(true);
         OnMinigameActiveChanged?.Invoke(false);
@@ -337,11 +311,8 @@ public class CommunicationMinigameController : MonoBehaviour
     // Start the minigame, initialize values and randomize first success zone
     public void StartTask()
     {
-        isActive = true;
         taskCompleted = false;
         dwellTimeCounter = 0f;
-
-        EnsureIndicatorList();
 
         // initialize indicators
         if (indicatorLights != null && indicatorLights.Count > 0)
@@ -364,18 +335,4 @@ public class CommunicationMinigameController : MonoBehaviour
 
         Debug.Log($"Minigame started. indicators={indicatorLights.Count}, currentIndex={currentIndicatorIndex}, frequency={currentFrequency}");
     }
-
-    // Stop the minigame manually
-    public void StopTask()
-    {
-        isActive = false;
-        dwellTimeCounter = 0f;
-        OnMinigameActiveChanged?.Invoke(false);
-
-        Debug.Log("Minigame stopped by UI.");
-    }
-
-    // simple properties to check state from other scripts
-    public bool IsTaskCompleted => taskCompleted;
-    public float GetCurrentFrequency => currentFrequency;
 }
