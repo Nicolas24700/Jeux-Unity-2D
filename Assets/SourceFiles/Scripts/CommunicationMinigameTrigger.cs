@@ -5,7 +5,6 @@ public class CommunicationMinigameTrigger : MonoBehaviour
     [SerializeField] private CommunicationMinigameUI uiController;
     [SerializeField] private KeyCode interactKey = KeyCode.E;
     [SerializeField] private string playerTag = "Player";
-    [Tooltip("Optional: small UI GameObject (e.g. Text) to show when player is near, like 'Press E'.")]
     [SerializeField] private GameObject interactionPrompt;
 
     private bool playerNearby = false;

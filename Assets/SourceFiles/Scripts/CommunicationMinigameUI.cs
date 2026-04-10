@@ -5,10 +5,12 @@ using UnityEngine.EventSystems;
 public class CommunicationMinigameUI : MonoBehaviour
 {
     // ui references
-    [SerializeField] private GameObject panel; 
+    [SerializeField] private GameObject panel;
     [SerializeField] private CommunicationMinigameController controller;
-    [SerializeField] private MonoBehaviour playerController; 
+    [SerializeField] private MonoBehaviour playerController;
     [SerializeField] private GameObject successPanel;
+
+    [SerializeField] private Animator firstDoorAnimator;
 
     private void Awake()
     {
@@ -45,6 +47,9 @@ public class CommunicationMinigameUI : MonoBehaviour
 
             if (playerController != null)
                 playerController.enabled = true;
+
+            // open the door
+            OpenFirstDoor();
         }
     }
 
@@ -104,4 +109,15 @@ public class CommunicationMinigameUI : MonoBehaviour
     }
 
     public bool IsVisible => panel != null && panel.activeSelf;
+
+    // -------------------------
+    // door Open function
+    // -------------------------
+    private void OpenFirstDoor()
+    {
+        const string IS_OPEN_PARAM = "IsOpen";
+
+         firstDoorAnimator.SetBool(IS_OPEN_PARAM, true);
+           return;
+    }
 }
