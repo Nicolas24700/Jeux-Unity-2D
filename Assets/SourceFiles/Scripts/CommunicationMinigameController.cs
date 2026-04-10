@@ -125,7 +125,6 @@ public class CommunicationMinigameController : MonoBehaviour
     // Increase the frequency smoothly when holding key.
     private void ContinuousIncrease()
     {
-        if (taskCompleted) return;
         currentFrequency = Mathf.Clamp(currentFrequency + continuousSpeed * Time.deltaTime, minFrequency, maxFrequency);
         if (frequencySlider != null) frequencySlider.value = currentFrequency;
         UpdateSliderVisuals();
@@ -134,7 +133,6 @@ public class CommunicationMinigameController : MonoBehaviour
     // Decrease the frequency smoothly when holding key.
     private void ContinuousDecrease()
     {
-        if (taskCompleted) return;
         currentFrequency = Mathf.Clamp(currentFrequency - continuousSpeed * Time.deltaTime, minFrequency, maxFrequency);
         if (frequencySlider != null) frequencySlider.value = currentFrequency;
         UpdateSliderVisuals();

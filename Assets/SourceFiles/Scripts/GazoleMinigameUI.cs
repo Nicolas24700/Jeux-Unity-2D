@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
+public class GazoleMinigameUI : MonoBehaviour, IMinigameUI
 {
     // ui references
     [SerializeField] private GameObject panel;
-    [SerializeField] private CommunicationMinigameController controller;
+    [SerializeField] private GazoleMinigameController controller;
     [SerializeField] private MonoBehaviour playerController;
     [SerializeField] private GameObject successPanel;
 
@@ -14,7 +14,6 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
 
     private void Awake()
     {
-        // ensure all panels are hidden at the start
         if (panel != null)
             panel.SetActive(false);
         if (successPanel != null)
@@ -23,22 +22,24 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
 
     private void OnEnable()
     {
-        CommunicationMinigameController.OnTaskStateChanged += OnTaskStateChanged;
+        // subscribe to the task state change event to react when the player completes the task
+        GazoleMinigameController.OnTaskStateChanged += OnTaskStateChanged;
     }
 
     private void OnDisable()
     {
-        CommunicationMinigameController.OnTaskStateChanged -= OnTaskStateChanged;
+        // unsubscribe from the event to avoid memory leaks and unintended behavior when the object is disabled or destroyed
+        GazoleMinigameController.OnTaskStateChanged -= OnTaskStateChanged;
     }
 
     private void OnTaskStateChanged(bool completed)
     {
-        // when the task state changes, if it's completed, show the success panel and hide the main panel, then re-enable player control
         if (completed)
         {
             if (successPanel != null)
             {
                 successPanel.SetActive(true);
+                // start a coroutine to hide the success panel after a delay, using unscaled time to ensure it works even if the game is paused
                 CoroutineRunner.Run(HideSuccessAfterDelayRealtime(2f));
             }
 
@@ -48,7 +49,6 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
             if (playerController != null)
                 playerController.enabled = true;
 
-            // open the door
             OpenFirstDoor();
         }
     }
@@ -63,7 +63,7 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
 
     public void Show()
     {
-        // when showing the UI, disable player control and navigation events to prevent interference with the minigame
+        // when showing the UI, we activate the panel, disable player control, and disable navigation events to prevent unintended interactions with other UI elements
         if (panel == null || controller == null) return;
         panel.SetActive(true);
 
@@ -79,12 +79,11 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
         }
 
         controller.StartTask();
-        Debug.Log("Communication UI shown");
+        Debug.Log("Gazole UI shown");
     }
 
     public void Hide()
     {
-        // when hiding the UI, re-enable player control and navigation events
         if (panel == null || controller == null) return;
         panel.SetActive(false);
 
@@ -99,7 +98,7 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
             EventSystem.current.sendNavigationEvents = true;
         }
 
-        Debug.Log("Communication UI hidden");
+        Debug.Log("Gazole UI hidden");
     }
 
     public void Toggle()
@@ -116,8 +115,7 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
     private void OpenFirstDoor()
     {
         const string IS_OPEN_PARAM = "IsOpen";
-
-        firstDoorAnimator.SetBool(IS_OPEN_PARAM, true);
-        return;
+        if (firstDoorAnimator != null)
+            firstDoorAnimator.SetBool(IS_OPEN_PARAM, true);
     }
 }
