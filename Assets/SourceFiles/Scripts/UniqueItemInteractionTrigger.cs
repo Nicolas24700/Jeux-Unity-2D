@@ -138,6 +138,5 @@ public class UniqueItemInteractionTrigger : MonoBehaviour
 
         equippedItemInstance = null;
         sprayParticles = null;
-        hasGivenItem = false;
     }
 }

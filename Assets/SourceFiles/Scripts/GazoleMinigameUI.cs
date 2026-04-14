@@ -1,6 +1,6 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
+    using UnityEngine;
+    using UnityEngine.UI;
+    using UnityEngine.EventSystems;
 
 public class GazoleMinigameUI : MonoBehaviour, IMinigameUI
 {
@@ -11,16 +11,10 @@ public class GazoleMinigameUI : MonoBehaviour, IMinigameUI
     [SerializeField] private GameObject successPanel;
 
     [SerializeField] private Animator firstDoorAnimator;
+
     private void OnEnable()
     {
-        // subscribe to the task state change event to react when the player completes the task
         GazoleMinigameController.OnTaskStateChanged += OnTaskStateChanged;
-    }
-
-    private void OnDisable()
-    {
-        // unsubscribe from the event to avoid memory leaks and unintended behavior when the object is disabled or destroyed
-        GazoleMinigameController.OnTaskStateChanged -= OnTaskStateChanged;
     }
 
     private void OnTaskStateChanged(bool completed)
@@ -55,7 +49,7 @@ public class GazoleMinigameUI : MonoBehaviour, IMinigameUI
     public void Show()
     {
         // when showing the UI, we activate the panel, disable player control, and disable navigation events to prevent unintended interactions with other UI elements
-        if (panel == null || controller == null) return;
+        if (panel == null || controller == null || controller.IsTaskCompleted) return;
         panel.SetActive(true);
 
         if (playerController != null)

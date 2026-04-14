@@ -20,6 +20,7 @@ public class GazoleMinigameController : MonoBehaviour
 
     //state variables
     private float currentFuel = 0f;
+    private bool taskCompleted;
 
     private void Start()
     {
@@ -51,6 +52,8 @@ public class GazoleMinigameController : MonoBehaviour
 
     public void SetFuel(float value)
     {
+        if (taskCompleted)
+            return;
 
         // rounding the fuel value and update the UI
         currentFuel = Mathf.Clamp(value, 0f, maxFuel);
@@ -60,6 +63,7 @@ public class GazoleMinigameController : MonoBehaviour
 
         if (currentFuel >= maxFuel)
         {
+            taskCompleted = true;
             OnTaskStateChanged?.Invoke(true);
             OnMinigameActiveChanged?.Invoke(false);
             // with invoke , other systems can react to the task completion and minigame deactivation without needing a direct reference to this controller, allowing for better decoupling and modularity in the codebase.
@@ -68,7 +72,12 @@ public class GazoleMinigameController : MonoBehaviour
 
     public void StartTask()
     {
+        if (taskCompleted)
+            return;
+
         SetFuel(0f);
         OnMinigameActiveChanged?.Invoke(true);
     }
+
+    public bool IsTaskCompleted => taskCompleted;
 }

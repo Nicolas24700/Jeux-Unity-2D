@@ -55,7 +55,7 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
     public void Show()
     {
         // when showing the UI, disable player control and navigation events to prevent interference with the minigame
-        if (panel == null || controller == null) return;
+        if (panel == null || controller == null || controller.IsTaskCompleted) return;
         panel.SetActive(true);
 
         if (playerController != null)

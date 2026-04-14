@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,9 @@ public class FireExtinguishable : MonoBehaviour
     [SerializeField] private GameObject objectToDestroy;
     [SerializeField] private float destroyDelay = 0.1f;
 
+    // Event to signal fire extinguished
+    public static event Action OnFireExtinguished;
+
     private float currentFireStrength;
     private bool isExtinguished;
     private readonly List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
@@ -21,8 +25,6 @@ public class FireExtinguishable : MonoBehaviour
         currentFireStrength = Mathf.Max(1f, maxFireStrength);
     }
 
-
-// ---------------------------
     private void OnParticleCollision(GameObject other)
     {
         if (isExtinguished)
@@ -59,8 +61,11 @@ public class FireExtinguishable : MonoBehaviour
     {
         isExtinguished = true;
 
+        // Invoke event to notify timer and other systems that fire is extinguished
+        OnFireExtinguished?.Invoke();
+
         // Remove extincteur from player if fire is extinguished.
-        UniqueItemInteractionTrigger trigger = Object.FindFirstObjectByType<UniqueItemInteractionTrigger>();
+        UniqueItemInteractionTrigger trigger = UnityEngine.Object.FindFirstObjectByType<UniqueItemInteractionTrigger>();
         if (trigger != null && trigger.EquippedItemInstance != null)
             trigger.RemoveEquippedItem();
 

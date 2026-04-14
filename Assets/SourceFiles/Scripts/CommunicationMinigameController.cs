@@ -54,6 +54,8 @@ public class CommunicationMinigameController : MonoBehaviour
     public static event Action<bool> OnTaskStateChanged;
     public static event Action<bool> OnMinigameActiveChanged;
 
+    public bool IsTaskCompleted => taskCompleted;
+
     // Pick a random green zone inside min..max with width = successZoneWidth.
     private void SetRandomSuccessZone()
     {
@@ -288,6 +290,9 @@ public class CommunicationMinigameController : MonoBehaviour
     // Called when all indicators are completed
     private void CompleteTask()
     {
+        if (taskCompleted)
+            return;
+
         taskCompleted = true;
         if (feedbackAudio != null && successClip != null) feedbackAudio.PlayOneShot(successClip, 1f);
         OnTaskStateChanged?.Invoke(true);
@@ -306,6 +311,9 @@ public class CommunicationMinigameController : MonoBehaviour
     // Start the minigame, initialize values and randomize first success zone
     public void StartTask()
     {
+        if (taskCompleted)
+            return;
+
         taskCompleted = false;
         dwellTimeCounter = 0f;
 
