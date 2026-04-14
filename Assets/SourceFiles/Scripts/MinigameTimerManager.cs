@@ -18,6 +18,12 @@ public class MinigameTimerManager : MonoBehaviour
     [SerializeField] private GameMenu gameMenu;
     [SerializeField] private GameObject playerRobot;
 
+    [Header("Result Audio")]
+    [SerializeField] private AudioSource resultAudioSource;
+    [SerializeField] private AudioClip successMusic;
+    [SerializeField] private AudioClip failMusic;
+    [SerializeField, Range(0f, 1f)] private float resultMusicVolume = 1f;
+
     private float remainingTime;
     private bool isRunFinished;
     private bool gazoleSolved;
@@ -118,6 +124,7 @@ public class MinigameTimerManager : MonoBehaviour
     private void ShowSuccessPanel()
     {
         isRunFinished = true;
+        PlayResultMusic(successMusic);
 
         // unlock the cursor and make it visible for interacting with the success panel
         Cursor.lockState = CursorLockMode.None;
@@ -146,6 +153,7 @@ public class MinigameTimerManager : MonoBehaviour
     private void ShowFailPanel()
     {
         isRunFinished = true;
+        PlayResultMusic(failMusic);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -191,5 +199,16 @@ public class MinigameTimerManager : MonoBehaviour
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         timerText.text = minutes.ToString("00") + ":" + seconds.ToString("00");
+    }
+
+    private void PlayResultMusic(AudioClip clip)
+    {
+        if (resultAudioSource == null || clip == null)
+            return;
+
+        resultAudioSource.Stop();
+        resultAudioSource.clip = clip;
+        resultAudioSource.volume = resultMusicVolume;
+        resultAudioSource.Play();
     }
 }

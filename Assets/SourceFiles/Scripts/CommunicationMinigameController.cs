@@ -28,8 +28,6 @@ public class CommunicationMinigameController : MonoBehaviour
     [SerializeField] private List<Image> indicatorLights = new List<Image>(); 
     [SerializeField] private AudioSource feedbackAudio;
     [SerializeField] private AudioClip successClip;
-    [SerializeField] private AudioClip warningClip;
-    [SerializeField] private AudioClip failClip;
 
     [Header("Paramètres")]
     //Dwell time equal to how long the player needs to keep the slider in the green zone to complete an indicator.
@@ -277,14 +275,7 @@ public class CommunicationMinigameController : MonoBehaviour
         {
             feedbackAudio.PlayOneShot(successClip, 0.5f);
         }
-        else if (Mathf.Abs(currentFrequency - (successZoneMin + successZoneMax) / 2f) < 15f)
-        {
-            feedbackAudio.PlayOneShot(warningClip, 0.3f);
-        }
-        else
-        {
-            feedbackAudio.PlayOneShot(failClip, 0.2f);
-        }
+        
     }
 
     // Called when all indicators are completed
