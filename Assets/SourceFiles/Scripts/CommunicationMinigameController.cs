@@ -181,7 +181,6 @@ public class CommunicationMinigameController : MonoBehaviour
         // if all done, finish the minigame
         if (completedCount >= indicatorLights.Count)
         {
-            Debug.Log("All indicators completed. Finishing task.");
             CompleteTask();
             isAdvancing = false;
             yield break;
@@ -302,8 +301,6 @@ public class CommunicationMinigameController : MonoBehaviour
                 if (indicatorLights[i] != null) indicatorLights[i].color = successColor;
             }
         }
-
-        Debug.Log("✅ Communication rétablie ! Toutes les lumières sont vertes.");
     }
 
     // Start the minigame, initialize values and randomize first success zone
@@ -331,6 +328,5 @@ public class CommunicationMinigameController : MonoBehaviour
         UpdateSliderVisuals();
         OnMinigameActiveChanged?.Invoke(true);
 
-        Debug.Log($"Minigame started. indicators={indicatorLights.Count}, currentIndex={currentIndicatorIndex}, frequency={currentFrequency}");
     }
 }

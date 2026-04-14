@@ -11,15 +11,6 @@ public class GazoleMinigameUI : MonoBehaviour, IMinigameUI
     [SerializeField] private GameObject successPanel;
 
     [SerializeField] private Animator firstDoorAnimator;
-
-    private void Awake()
-    {
-        if (panel != null)
-            panel.SetActive(false);
-        if (successPanel != null)
-            successPanel.SetActive(false);
-    }
-
     private void OnEnable()
     {
         // subscribe to the task state change event to react when the player completes the task
@@ -79,7 +70,6 @@ public class GazoleMinigameUI : MonoBehaviour, IMinigameUI
         }
 
         controller.StartTask();
-        Debug.Log("Gazole UI shown");
     }
 
     public void Hide()
@@ -90,15 +80,12 @@ public class GazoleMinigameUI : MonoBehaviour, IMinigameUI
         if (playerController != null)
         {
             playerController.enabled = true;
-            Debug.Log("Player controller unfrozen");
         }
 
         if (EventSystem.current != null)
         {
             EventSystem.current.sendNavigationEvents = true;
         }
-
-        Debug.Log("Gazole UI hidden");
     }
 
     public void Toggle()

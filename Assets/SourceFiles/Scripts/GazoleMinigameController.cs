@@ -63,7 +63,6 @@ public class GazoleMinigameController : MonoBehaviour
             OnTaskStateChanged?.Invoke(true);
             OnMinigameActiveChanged?.Invoke(false);
             // with invoke , other systems can react to the task completion and minigame deactivation without needing a direct reference to this controller, allowing for better decoupling and modularity in the codebase.
-            Debug.Log("✅ Gazole : réservoir plein, tâche terminée.");
         }
     }
 

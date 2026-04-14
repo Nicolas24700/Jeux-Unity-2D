@@ -12,15 +12,6 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
 
     [SerializeField] private Animator firstDoorAnimator;
 
-    private void Awake()
-    {
-        // ensure all panels are hidden at the start
-        if (panel != null)
-            panel.SetActive(false);
-        if (successPanel != null)
-            successPanel.SetActive(false);
-    }
-
     private void OnEnable()
     {
         CommunicationMinigameController.OnTaskStateChanged += OnTaskStateChanged;
@@ -79,7 +70,6 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
         }
 
         controller.StartTask();
-        Debug.Log("Communication UI shown");
     }
 
     public void Hide()
@@ -91,15 +81,12 @@ public class CommunicationMinigameUI : MonoBehaviour, IMinigameUI
         if (playerController != null)
         {
             playerController.enabled = true;
-            Debug.Log("Player controller unfrozen");
         }
 
         if (EventSystem.current != null)
         {
             EventSystem.current.sendNavigationEvents = true;
         }
-
-        Debug.Log("Communication UI hidden");
     }
 
     public void Toggle()

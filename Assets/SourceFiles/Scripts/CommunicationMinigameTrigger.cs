@@ -16,14 +16,6 @@ public class CommunicationMinigameTrigger : MonoBehaviour
         if (uiGameObject != null)
         {
             minigameUI = uiGameObject.GetComponent<IMinigameUI>();
-            if (minigameUI == null)
-            {
-                Debug.LogError($"{name}: {uiGameObject.name} does not have any component implementing IMinigameUI interface.");
-            }
-        }
-        else
-        {
-            Debug.LogError($"{name}: uiGameObject is not assigned.");
         }
 
         if (interactionPrompt != null)
@@ -35,7 +27,6 @@ public class CommunicationMinigameTrigger : MonoBehaviour
         if (playerNearby && minigameUI != null && Input.GetKeyDown(interactKey))
         {
             minigameUI.Toggle();
-            Debug.Log("Interaction E: toggled UI.");
         }
     }
 
@@ -46,7 +37,6 @@ public class CommunicationMinigameTrigger : MonoBehaviour
         {
             playerNearby = true;
             if (interactionPrompt != null) interactionPrompt.SetActive(true);
-            Debug.Log("Player entered communication trigger (3D).");
         }
     }
 
@@ -56,7 +46,6 @@ public class CommunicationMinigameTrigger : MonoBehaviour
         {
             playerNearby = false;
             if (interactionPrompt != null) interactionPrompt.SetActive(false);
-            Debug.Log("Player exited communication trigger (3D).");
         }
     }
 }
